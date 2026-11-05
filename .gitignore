@@ -1,0 +1,12 @@
+# System & editor files
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+
+# Temporary test scripts and artifacts
+capture_proof.ps1
+copy_mg.ps1
+extract_frames.html
+sim_rot.js
+test_*

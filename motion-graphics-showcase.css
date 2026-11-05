@@ -1,0 +1,968 @@
+/* ==========================================================================
+   Motion Graphics Interactive 3D Showcase & All-Videos Grid
+   Inspired by Reference Video (One SEO-optimized video can outperform 50 uploads):
+   - Phase 1: 3D Motion Video Animation Wall (Opens First on Card Click)
+   - Phase 2: Complete Video Grid View (2 Horizontal, 2 Vertical + 8 Practice Works)
+   - Phase 3: Fullscreen Cinematic Video Lightbox Player
+   - Kinetic Tracing Laser Lines, Rotating Badges & Pulsating Play Buttons
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Modal Backdrop & Base Viewport
+   -------------------------------------------------------------------------- */
+.mg-modal {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999998;
+  background: #080305;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  display: none !important;
+  pointer-events: none !important;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  perspective: 1200px;
+}
+
+.mg-modal.active {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+.mg-modal:not(.active) * {
+  pointer-events: none !important;
+}
+
+/* Ambient Backdrops */
+.mg-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% 15%, rgba(138, 154, 91, 0.18) 0%, rgba(8, 3, 5, 0.94) 75%), #070305;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.mg-splash-glow {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.45;
+  animation: mgGlowFloat 14s ease-in-out infinite alternate;
+}
+
+.mg-glow-1 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, #8A9A5B 0%, rgba(138, 154, 91, 0) 70%);
+  top: -120px;
+  right: -100px;
+}
+
+.mg-glow-2 {
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, #D5E5A8 0%, rgba(213, 229, 168, 0) 70%);
+  bottom: -150px;
+  left: -100px;
+  animation-delay: -7s;
+}
+
+.mg-glow-3 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, #FF3366 0%, rgba(255, 51, 102, 0) 70%);
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.15;
+}
+
+@keyframes mgGlowFloat {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, 40px) scale(1.1); }
+  100% { transform: translate(-25px, -30px) scale(0.95); }
+}
+
+/* --------------------------------------------------------------------------
+   HUD Top Navigation Bar
+   -------------------------------------------------------------------------- */
+.mg-hud-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 40px;
+  background: rgba(10, 4, 7, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mg-hud-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mg-hud-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background: rgba(138, 154, 91, 0.18);
+  border: 1px solid rgba(138, 154, 91, 0.4);
+  color: #D5E5A8;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.mg-hud-title {
+  font-size: 19px;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.mg-hud-title .text-accent {
+  color: #D5E5A8;
+}
+
+/* Mode Switcher Tabs */
+.mg-mode-switch {
+  display: inline-flex;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.mg-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.mg-mode-btn:hover {
+  color: #FFFFFF;
+}
+
+.mg-mode-btn.active {
+  background: linear-gradient(135deg, #D5E5A8 0%, #8A9A5B 100%);
+  color: #0A1107;
+  box-shadow: 0 4px 14px rgba(138, 154, 91, 0.4);
+}
+
+/* Close Button */
+.mg-close-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.mg-close-btn:hover {
+  background: rgba(255, 51, 102, 0.25);
+  border-color: #FF3366;
+  color: #FFD1DC;
+  transform: scale(1.04);
+}
+
+/* --------------------------------------------------------------------------
+   Modal Body View Modes (3D Motion Animation vs Grid View)
+   -------------------------------------------------------------------------- */
+.mg-modal-body {
+  position: absolute;
+  top: 73px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 10;
+}
+
+/* --------------------------------------------------------------------------
+   PHASE 1: 3D MOTION VIDEO ANIMATION WALL (OPENS FIRST)
+   Continuous Looping Columns Drifting in 3D Space
+   -------------------------------------------------------------------------- */
+.mg-3d-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  perspective: 1200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s ease;
+}
+
+.mg-3d-plane {
+  position: absolute;
+  top: -45%;
+  left: -20%;
+  width: 140%;
+  height: 190%;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  transform: rotateX(16deg) rotateY(-18deg) rotateZ(6deg);
+  transform-style: preserve-3d;
+  pointer-events: auto;
+}
+
+.mg-3d-col {
+  width: clamp(220px, 18vw, 300px);
+  flex-shrink: 0;
+  overflow: hidden;
+  height: 100%;
+}
+
+.mg-3d-track {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  will-change: transform;
+}
+
+.mg-col-1 .mg-3d-track { animation: mgScrollTrack 26s linear infinite; }
+.mg-col-2 .mg-3d-track { animation: mgScrollTrack 20s linear infinite; }
+.mg-col-3 .mg-3d-track { animation: mgScrollTrack 24s linear infinite; }
+.mg-col-4 .mg-3d-track { animation: mgScrollTrack 18s linear infinite; }
+.mg-col-5 .mg-3d-track { animation: mgScrollTrack 22s linear infinite; }
+
+@keyframes mgScrollTrack {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+/* 3D Video Card */
+.mg-3d-card {
+  position: relative;
+  width: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #000000;
+  border: 1.5px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s ease,
+              border-color 0.35s ease;
+}
+
+.mg-3d-card.aspect-horiz {
+  aspect-ratio: 16 / 9;
+}
+
+.mg-3d-card.aspect-vert {
+  aspect-ratio: 9 / 16;
+}
+
+.mg-3d-card video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mg-3d-card:hover {
+  transform: translateZ(40px) scale(1.05);
+  border-color: #D5E5A8;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.9), 0 0 35px rgba(213, 229, 168, 0.5);
+  z-index: 50;
+}
+
+/* Tracing Neon Border around 3D card */
+.mg-3d-card::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 20px;
+  background: conic-gradient(from 0deg, transparent 0%, #D5E5A8 25%, #8A9A5B 50%, transparent 75%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  z-index: 2;
+  animation: mgLaserSpin 5s linear infinite;
+  pointer-events: none;
+}
+
+.mg-3d-card:hover::before {
+  opacity: 1;
+}
+
+/* Floating Interactive Pill Hint */
+.mg-floating-hint {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 80;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  background: rgba(14, 8, 12, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(213, 229, 168, 0.6);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.75), 0 0 25px rgba(138, 154, 91, 0.3);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: mgHintBounce 3s ease-in-out infinite;
+}
+
+.mg-floating-hint:hover {
+  background: rgba(213, 229, 168, 0.95);
+  color: #0A1107;
+  border-color: #D5E5A8;
+  transform: translateX(-50%) translateY(-4px) scale(1.03);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.85), 0 0 35px rgba(213, 229, 168, 0.6);
+}
+
+.mg-hint-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #D5E5A8;
+}
+
+.mg-floating-hint:hover .mg-hint-icon {
+  color: #0A1107;
+}
+
+@keyframes mgHintBounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-6px); }
+}
+
+/* --------------------------------------------------------------------------
+   PHASE 2: COMPLETE VIDEO GRID VIEW (ALL VIDEOS VISIBLE)
+   -------------------------------------------------------------------------- */
+.mg-grid-scene {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 30px 40px 100px;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s ease;
+  scroll-behavior: smooth;
+}
+
+.mg-grid-scene::-webkit-scrollbar {
+  width: 8px;
+}
+
+.mg-grid-scene::-webkit-scrollbar-track {
+  background: rgba(8, 2, 4, 0.6);
+}
+
+.mg-grid-scene::-webkit-scrollbar-thumb {
+  background: rgba(138, 154, 91, 0.45);
+  border-radius: 4px;
+}
+
+.mg-grid-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Grid Header */
+.mg-grid-header {
+  text-align: center;
+  margin-bottom: 36px;
+  padding: 0 20px;
+}
+
+.mg-grid-headline {
+  font-size: clamp(26px, 3.8vw, 44px);
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  margin: 0 0 8px;
+  background: linear-gradient(135deg, #FFFFFF 0%, #D5E5A8 60%, #8A9A5B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mg-grid-subline {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0;
+}
+
+/* Section Group */
+.mg-section-group {
+  margin-bottom: 50px;
+}
+
+.mg-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mg-section-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mg-section-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #D5E5A8;
+  box-shadow: 0 0 12px #D5E5A8;
+  animation: mgIndicatorPulse 2s infinite ease-in-out;
+}
+
+@keyframes mgIndicatorPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.6; }
+}
+
+.mg-section-title {
+  font-size: 21px;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+  letter-spacing: 0.3px;
+}
+
+.mg-section-pill {
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+/* 2 Horizontal Widescreen Cards Grid */
+.mg-horizontal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+}
+
+/* Vertical Social Reels Cards Grid */
+.mg-vertical-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 420px));
+  justify-content: center;
+  gap: 36px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Additional Practice Grid (4 columns) */
+.mg-additional-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+/* Standard Video Card (in Grid View) */
+.mg-video-card {
+  position: relative;
+  background: rgba(14, 8, 12, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s ease,
+              border-color 0.35s ease;
+}
+
+.mg-video-card:hover {
+  transform: translateY(-8px) scale(1.015);
+  border-color: rgba(213, 229, 168, 0.55);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(138, 154, 91, 0.3);
+}
+
+/* Tracing Neon Laser Border */
+.mg-video-card::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 22px;
+  background: conic-gradient(from 0deg, transparent 0%, #D5E5A8 25%, #8A9A5B 50%, transparent 75%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 0;
+  animation: mgLaserSpin 6s linear infinite;
+  pointer-events: none;
+}
+
+.mg-video-card:hover::before {
+  opacity: 1;
+}
+
+@keyframes mgLaserSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.mg-card-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000000;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.mg-vertical-card .mg-card-media {
+  aspect-ratio: 9 / 16;
+  max-height: 560px;
+}
+
+.mg-card-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mg-video-card:hover .mg-card-media video {
+  transform: scale(1.05);
+}
+
+/* Rotating Stamp Badge */
+.mg-rotating-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 66px;
+  height: 66px;
+  z-index: 5;
+  pointer-events: none;
+  animation: mgBadgeSpin 18s linear infinite;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+}
+
+@keyframes mgBadgeSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.mg-badge-svg text {
+  font-size: 8px;
+  font-weight: 800;
+  fill: #D5E5A8;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.mg-badge-center-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(14, 19, 13, 0.85);
+  border: 1px solid rgba(213, 229, 168, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #D5E5A8;
+}
+
+/* Pulsating Play Button Overlay */
+.mg-play-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+  transition: background 0.3s ease;
+  z-index: 4;
+}
+
+.mg-video-card:hover .mg-play-overlay,
+.mg-3d-card:hover .mg-play-overlay {
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.mg-play-button-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mg-play-pulse-ring {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid rgba(213, 229, 168, 0.6);
+  animation: mgPulseWave 2.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  pointer-events: none;
+}
+
+.mg-pulse-2 {
+  animation-delay: 0.7s;
+}
+
+@keyframes mgPulseWave {
+  0% { transform: scale(0.9); opacity: 0.9; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+.mg-play-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #D5E5A8 0%, #8A9A5B 100%);
+  color: #0A1107;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 25px rgba(213, 229, 168, 0.4);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+}
+
+.mg-video-card:hover .mg-play-btn,
+.mg-3d-card:hover .mg-play-btn {
+  transform: scale(1.15);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.75), 0 0 35px rgba(213, 229, 168, 0.7);
+}
+
+.mg-play-btn svg {
+  margin-left: 3px;
+}
+
+/* Soundwave Equalizer Bars */
+.mg-soundwaves {
+  position: absolute;
+  bottom: -20px;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 14px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mg-video-card:hover .mg-soundwaves,
+.mg-3d-card:hover .mg-soundwaves {
+  opacity: 1;
+}
+
+.mg-wave-bar {
+  width: 2.5px;
+  background: #D5E5A8;
+  border-radius: 2px;
+  animation: mgSoundBounce 0.8s ease-in-out infinite alternate;
+}
+
+.mg-wave-bar:nth-child(1) { height: 6px; animation-delay: 0.1s; }
+.mg-wave-bar:nth-child(2) { height: 12px; animation-delay: 0.25s; }
+.mg-wave-bar:nth-child(3) { height: 8px; animation-delay: 0.15s; }
+.mg-wave-bar:nth-child(4) { height: 14px; animation-delay: 0.35s; }
+.mg-wave-bar:nth-child(5) { height: 7px; animation-delay: 0.2s; }
+
+@keyframes mgSoundBounce {
+  0% { transform: scaleY(0.4); }
+  100% { transform: scaleY(1); }
+}
+
+/* Card Metadata Info */
+.mg-card-info {
+  position: relative;
+  z-index: 2;
+  padding: 16px 20px 18px;
+  background: rgba(14, 8, 12, 0.95);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mg-card-top-tags {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mg-card-tag {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #D5E5A8;
+}
+
+.mg-card-format-pill {
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.mg-card-title {
+  font-size: 16.5px;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.mg-card-desc {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.62);
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   VIEW MODE TOGGLING RULES
+   -------------------------------------------------------------------------- */
+[data-view-mode="3d"] .mg-3d-scene {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  transform: scale(1);
+}
+
+[data-view-mode="3d"] .mg-grid-scene {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transform: scale(0.96);
+}
+
+[data-view-mode="grid"] .mg-3d-scene {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transform: scale(1.06);
+}
+
+[data-view-mode="grid"] .mg-grid-scene {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  transform: scale(1);
+}
+
+/* --------------------------------------------------------------------------
+   FULLSCREEN VIDEO LIGHTBOX (Cinematic Player)
+   -------------------------------------------------------------------------- */
+.mg-video-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000000;
+  background: rgba(4, 2, 3, 0.94);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+  padding: 24px;
+}
+
+.mg-video-lightbox.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.mg-lightbox-player-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 1180px;
+  max-height: 88vh;
+  background: #000000;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.95), 0 0 50px rgba(138, 154, 91, 0.25);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+}
+
+.mg-lightbox-player-wrap.vertical-aspect {
+  max-width: 480px;
+}
+
+.mg-lightbox-video-container {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mg-lightbox-video-container video {
+  width: 100%;
+  max-height: 72vh;
+  object-fit: contain;
+  display: block;
+}
+
+.mg-lightbox-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(18, 12, 16, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(255, 255, 255, 0.32);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 100;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+}
+
+.mg-lightbox-close:hover {
+  background: #FF3366;
+  border-color: #FF3366;
+  color: #FFFFFF;
+  transform: scale(1.08) rotate(90deg);
+  box-shadow: 0 0 20px rgba(255, 51, 102, 0.6);
+}
+
+.mg-lightbox-footer {
+  padding: 16px 24px;
+  background: rgba(14, 8, 12, 0.96);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mg-lightbox-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.mg-lightbox-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mg-tool-pill {
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(138, 154, 91, 0.2);
+  border: 1px solid rgba(138, 154, 91, 0.4);
+  color: #D5E5A8;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Rules
+   -------------------------------------------------------------------------- */
+@media (max-width: 992px) {
+  .mg-3d-col {
+    width: clamp(190px, 22vw, 240px);
+  }
+  .mg-horizontal-grid {
+    grid-template-columns: 1fr;
+  }
+  .mg-vertical-grid {
+    grid-template-columns: 1fr;
+    max-width: 440px;
+  }
+  .mg-additional-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .mg-hud-header {
+    padding: 14px 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .mg-hud-title {
+    display: none;
+  }
+  .mg-mode-btn span {
+    display: none;
+  }
+  .mg-mode-btn {
+    padding: 8px 10px;
+  }
+  .mg-grid-scene {
+    padding: 20px 16px 80px;
+  }
+  .mg-additional-grid {
+    grid-template-columns: 1fr;
+  }
+  .mg-video-lightbox {
+    padding: 12px;
+  }
+  .mg-lightbox-close {
+    top: 12px;
+    right: 12px;
+    width: 38px;
+    height: 38px;
+  }
+}

@@ -1,0 +1,973 @@
+/* ==========================================================================
+   Logo Designs Interactive 3D Showcase & Brand Identity Gallery
+   Inspired by Reference Video (One SEO-optimized video can outperform 50 uploads):
+   - Phase 1: 3D Motion Logo Wall (Opens First on Card Click)
+   - Phase 2: Complete Logo Grid View (Personal Brand 2.0, Triguna, Video Flux)
+   - Phase 3: High-Resolution Logo Lightbox Viewer with Full Nav
+   - Kinetic Tracing Laser Lines, Rotating SVG Badges & Smooth Perspective
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Modal Backdrop & Base Viewport
+   -------------------------------------------------------------------------- */
+.ld-modal {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999998;
+  background: #080305;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  display: none !important;
+  pointer-events: none !important;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  perspective: 1200px;
+}
+
+.ld-modal.active {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+.ld-modal:not(.active) * {
+  pointer-events: none !important;
+}
+
+/* Ambient Backdrops */
+.ld-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% 15%, rgba(138, 154, 91, 0.18) 0%, rgba(8, 3, 5, 0.94) 75%), #070305;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ld-splash-glow {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.45;
+  animation: ldGlowFloat 14s ease-in-out infinite alternate;
+}
+
+.ld-glow-1 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, #8A9A5B 0%, rgba(138, 154, 91, 0) 70%);
+  top: -120px;
+  right: -100px;
+}
+
+.ld-glow-2 {
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, #D5E5A8 0%, rgba(213, 229, 168, 0) 70%);
+  bottom: -150px;
+  left: -100px;
+  animation-delay: -7s;
+}
+
+.ld-glow-3 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, #FF3366 0%, rgba(255, 51, 102, 0) 70%);
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.15;
+}
+
+@keyframes ldGlowFloat {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, 40px) scale(1.1); }
+  100% { transform: translate(-25px, -30px) scale(0.95); }
+}
+
+/* --------------------------------------------------------------------------
+   HUD Top Navigation Bar
+   -------------------------------------------------------------------------- */
+.ld-hud-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 40px;
+  background: rgba(10, 4, 7, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ld-hud-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ld-hud-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background: rgba(138, 154, 91, 0.18);
+  border: 1px solid rgba(138, 154, 91, 0.4);
+  color: #D5E5A8;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.ld-hud-title {
+  font-size: 19px;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.ld-hud-title .text-accent {
+  color: #D5E5A8;
+}
+
+.ld-hud-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Mode Switcher Tabs */
+.ld-mode-switch {
+  display: inline-flex;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.ld-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.ld-mode-btn:hover {
+  color: #FFFFFF;
+}
+
+.ld-mode-btn.active {
+  background: linear-gradient(135deg, #D5E5A8 0%, #8A9A5B 100%);
+  color: #0A1107;
+  box-shadow: 0 4px 14px rgba(138, 154, 91, 0.4);
+}
+
+/* Close Button */
+.ld-close-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.ld-close-btn:hover {
+  background: rgba(255, 51, 102, 0.25);
+  border-color: #FF3366;
+  color: #FFD1DC;
+  transform: scale(1.04);
+}
+
+/* --------------------------------------------------------------------------
+   Modal Body View Modes (3D Motion Animation vs Grid View)
+   -------------------------------------------------------------------------- */
+.ld-modal-body {
+  position: absolute;
+  top: 73px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 10;
+}
+
+/* --------------------------------------------------------------------------
+   PHASE 1: 3D MOTION LOGO WALL (OPENS FIRST)
+   Continuous Looping Columns Drifting in 3D Perspective Space
+   -------------------------------------------------------------------------- */
+.ld-3d-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  perspective: 1200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s ease;
+}
+
+.ld-3d-plane {
+  position: absolute;
+  top: -45%;
+  left: -20%;
+  width: 140%;
+  height: 190%;
+  display: flex;
+  justify-content: center;
+  gap: 26px;
+  transform: rotateX(16deg) rotateY(-18deg) rotateZ(6deg);
+  transform-style: preserve-3d;
+  pointer-events: auto;
+}
+
+.ld-3d-col {
+  width: clamp(230px, 19vw, 320px);
+  flex-shrink: 0;
+  overflow: hidden;
+  height: 100%;
+}
+
+.ld-3d-track {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  will-change: transform;
+}
+
+.ld-col-1 .ld-3d-track { animation: ldScrollTrack 28s linear infinite; }
+.ld-col-2 .ld-3d-track { animation: ldScrollTrack 22s linear infinite; }
+.ld-col-3 .ld-3d-track { animation: ldScrollTrack 26s linear infinite; }
+.ld-col-4 .ld-3d-track { animation: ldScrollTrack 20s linear infinite; }
+.ld-col-5 .ld-3d-track { animation: ldScrollTrack 24s linear infinite; }
+
+@keyframes ldScrollTrack {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+/* 3D Logo Card */
+.ld-3d-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #0D080B;
+  border: 1.5px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s ease,
+              border-color 0.35s ease;
+}
+
+.ld-3d-card.aspect-wide {
+  aspect-ratio: 16 / 10;
+}
+
+.ld-3d-card.aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
+.ld-3d-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.ld-3d-card:hover {
+  transform: translateZ(45px) scale(1.05);
+  border-color: #D5E5A8;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.9), 0 0 35px rgba(213, 229, 168, 0.5);
+  z-index: 50;
+}
+
+.ld-3d-card:hover img {
+  transform: scale(1.06);
+}
+
+/* Tracing Neon Laser Border around 3D card */
+.ld-3d-card::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 20px;
+  background: conic-gradient(from 0deg, transparent 0%, #D5E5A8 25%, #8A9A5B 50%, transparent 75%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  z-index: 2;
+  animation: ldLaserSpin 5s linear infinite;
+  pointer-events: none;
+}
+
+.ld-3d-card:hover::before {
+  opacity: 1;
+}
+
+@keyframes ldLaserSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Rotating Stamp Badge on Logo Cards */
+.ld-rotating-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 60px;
+  height: 60px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.ld-badge-svg {
+  width: 100%;
+  height: 100%;
+  animation: ldBadgeSpin 18s linear infinite;
+  transform-origin: center;
+}
+
+.ld-badge-svg text {
+  fill: #D5E5A8;
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.ld-badge-center-icon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #D5E5A8;
+  filter: drop-shadow(0 0 6px rgba(213, 229, 168, 0.8));
+}
+
+@keyframes ldBadgeSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Card Hover Information Pill */
+.ld-card-info-badge {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  padding: 8px 12px;
+  background: rgba(10, 4, 7, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  z-index: 4;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: all 0.3s ease;
+}
+
+.ld-3d-card:hover .ld-card-info-badge {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ld-badge-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ld-badge-sub {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #D5E5A8;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Floating Interactive Pill Hint */
+.ld-floating-hint {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 80;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  background: rgba(14, 8, 12, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(213, 229, 168, 0.6);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.75), 0 0 25px rgba(138, 154, 91, 0.3);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: ldHintBounce 3s ease-in-out infinite;
+}
+
+.ld-floating-hint:hover {
+  background: rgba(213, 229, 168, 0.95);
+  color: #0A1107;
+  border-color: #D5E5A8;
+  transform: translateX(-50%) translateY(-4px) scale(1.03);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.85), 0 0 35px rgba(213, 229, 168, 0.6);
+}
+
+.ld-hint-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #D5E5A8;
+}
+
+.ld-floating-hint:hover .ld-hint-icon {
+  color: #0A1107;
+}
+
+@keyframes ldHintBounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-6px); }
+}
+
+/* --------------------------------------------------------------------------
+   PHASE 2: COMPLETE LOGO GRID VIEW (ALL LOGOS VISIBLE)
+   -------------------------------------------------------------------------- */
+.ld-grid-scene {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 30px 40px 100px;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s ease;
+  scroll-behavior: smooth;
+}
+
+.ld-grid-scene::-webkit-scrollbar {
+  width: 8px;
+}
+
+.ld-grid-scene::-webkit-scrollbar-track {
+  background: rgba(8, 2, 4, 0.6);
+}
+
+.ld-grid-scene::-webkit-scrollbar-thumb {
+  background: rgba(138, 154, 91, 0.45);
+  border-radius: 4px;
+}
+
+.ld-grid-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Grid Header */
+.ld-grid-header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding: 0 20px;
+}
+
+.ld-grid-headline {
+  font-size: clamp(26px, 3.8vw, 44px);
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  margin: 0 0 8px;
+  background: linear-gradient(135deg, #FFFFFF 0%, #D5E5A8 60%, #8A9A5B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ld-grid-subline {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0 0 20px;
+}
+
+/* Brand Filter Pills */
+.ld-brand-filters {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.ld-filter-btn {
+  padding: 7px 16px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.ld-filter-btn:hover {
+  color: #FFFFFF;
+  border-color: rgba(213, 229, 168, 0.4);
+}
+
+.ld-filter-btn.active {
+  background: rgba(138, 154, 91, 0.25);
+  border-color: #D5E5A8;
+  color: #D5E5A8;
+  box-shadow: 0 0 16px rgba(138, 154, 91, 0.3);
+}
+
+/* Section Group */
+.ld-section-group {
+  margin-bottom: 54px;
+}
+
+.ld-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ld-section-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ld-section-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #D5E5A8;
+  box-shadow: 0 0 10px #D5E5A8;
+}
+
+.ld-section-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+  letter-spacing: 0.3px;
+}
+
+.ld-section-pill {
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: rgba(138, 154, 91, 0.15);
+  border: 1px solid rgba(138, 154, 91, 0.35);
+  color: #D5E5A8;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Responsive Grid for Logos (4 columns on desktop) */
+.ld-logos-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+
+/* Standard Logo Card (in Grid View) */
+.ld-logo-card {
+  position: relative;
+  background: rgba(14, 8, 12, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ld-logo-card:hover {
+  transform: translateY(-8px);
+  border-color: #D5E5A8;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.85), 0 0 30px rgba(138, 154, 91, 0.35);
+}
+
+.ld-card-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #090507;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ld-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ld-logo-card:hover .ld-card-media img {
+  transform: scale(1.07);
+}
+
+/* Hover Overlay on Media */
+.ld-card-zoom-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 3, 5, 0.45);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.ld-logo-card:hover .ld-card-zoom-overlay {
+  opacity: 1;
+}
+
+.ld-grid-zoom-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  background: rgba(213, 229, 168, 0.95);
+  color: #0A1107;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 20px rgba(213, 229, 168, 0.5);
+  transform: translateY(6px);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ld-logo-card:hover .ld-grid-zoom-pill {
+  transform: translateY(0);
+}
+
+/* --------------------------------------------------------------------------
+   VIEW MODE TOGGLING RULES
+   -------------------------------------------------------------------------- */
+[data-view-mode="3d"] .ld-3d-scene {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  transform: scale(1);
+}
+
+[data-view-mode="3d"] .ld-grid-scene {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transform: scale(0.96);
+}
+
+[data-view-mode="grid"] .ld-3d-scene {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transform: scale(1.06);
+}
+
+[data-view-mode="grid"] .ld-grid-scene {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  transform: scale(1);
+}
+
+/* --------------------------------------------------------------------------
+   FULLSCREEN HIGH-RES LIGHTBOX VIEWER
+   -------------------------------------------------------------------------- */
+.ld-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000000;
+  background: rgba(4, 2, 3, 0.95);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+  padding: 24px;
+}
+
+.ld-lightbox.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.ld-lightbox-container {
+  position: relative;
+  width: 100%;
+  max-width: 1180px;
+  max-height: 90vh;
+  margin: auto;
+  background: #000000;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.95), 0 0 50px rgba(138, 154, 91, 0.25);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+}
+
+.ld-lightbox-header {
+  padding: 18px 26px;
+  background: rgba(14, 8, 12, 0.96);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+}
+
+.ld-lightbox-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ld-lightbox-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.ld-lightbox-subtitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: #D5E5A8;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.ld-lightbox-close {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.ld-lightbox-close:hover {
+  background: #FF3366;
+  border-color: #FF3366;
+  color: #FFFFFF;
+  transform: scale(1.08) rotate(90deg);
+}
+
+.ld-lightbox-image-wrap {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  max-height: 74vh;
+  background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.ld-lightbox-image-wrap img {
+  max-width: 100%;
+  max-height: 72vh;
+  object-fit: contain;
+  display: block;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
+/* Lightbox Nav Buttons */
+.ld-lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(14, 8, 12, 0.8);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  transition: all 0.25s ease;
+}
+
+.ld-lightbox-nav:hover {
+  background: rgba(213, 229, 168, 0.95);
+  color: #0A1107;
+  border-color: #D5E5A8;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.ld-lightbox-prev {
+  left: 20px;
+}
+
+.ld-lightbox-next {
+  right: 20px;
+}
+
+/* --------------------------------------------------------------------------
+   HOMEPAGE LOGO DESIGNS PREVIEW CYCLER (Matches Card 1 Frame & Curvy Corners)
+   -------------------------------------------------------------------------- */
+.project-preview-ld-cycler {
+  position: relative;
+  overflow: hidden;
+  background: transparent !important;
+}
+
+.ld-cycler-slide {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  bottom: 6px;
+  border-radius: 16px;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.7s ease, transform 0.7s ease;
+  transform: scale(1.02);
+}
+
+.ld-cycler-slide.active {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+}
+
+.ld-cycler-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.project-card:hover .ld-cycler-slide img {
+  transform: scale(1.05);
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE BREAKPOINTS
+   -------------------------------------------------------------------------- */
+@media (max-width: 1200px) {
+  .ld-logos-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+}
+
+@media (max-width: 900px) {
+  .ld-logos-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .ld-hud-header {
+    padding: 14px 20px;
+  }
+  .ld-hud-brand {
+    gap: 10px;
+  }
+  .ld-hud-title {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .ld-logos-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .ld-3d-col {
+    width: 200px;
+  }
+  .ld-grid-scene {
+    padding: 20px 16px 80px;
+  }
+  .ld-hud-header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .ld-mode-switch {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
+}
