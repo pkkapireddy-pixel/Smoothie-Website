@@ -1422,57 +1422,284 @@ body {
     display: none;
   }
 
-  .projects-block-panel {
-    padding: 22px 12px 18px;
-    border-radius: 24px;
+  /* Mobile Navigation Pill & LET'S TALK Button (Kept Strictly Inside the Frame) */
+  .site-header {
+    width: calc(100% - 20px) !important;
+    top: 6px !important;
+    padding: 6px 0 !important;
+    border-radius: 40px !important;
+    box-sizing: border-box !important;
   }
 
-  .projects-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
+  .site-header .container {
+    padding: 0 14px 0 12px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
-  .services-grid {
-    grid-template-columns: 1fr;
+  .site-header .brand-logo {
+    font-size: 15px !important;
+    gap: 8px !important;
   }
 
+  .site-header .brand-logo-img {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .site-header .btn-pill-blue {
+    padding: 7px 14px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    letter-spacing: 0.5px !important;
+    border-radius: 9999px !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Compact Hero Typography & Layout */
+  .hero-section {
+    padding-top: 90px;
+    padding-bottom: 24px;
+  }
+
+  .hero-content {
+    transform: translateY(198px) !important; /* Added one more line down (~23px) */
+    gap: 14px !important;
+  }
+
+  .hero-title {
+    font-size: 17px !important; /* Decreased text size a little bit */
+    line-height: 1.25 !important;
+    letter-spacing: -0.4px !important;
+  }
+
+  .hero-name-line {
+    font-size: 17px !important; /* Exact same size as the green text on mobile */
+    line-height: 1.25 !important;
+    margin-bottom: 5px;
+    display: block;
+  }
+
+  .hero-description {
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+  }
+
+  /* 3 Up, 3 Down Creative Tools Bar (Clean Glass Card, NOT Round) */
   .tools-bar,
   .logos-bar {
-    justify-content: center;
-    gap: 20px 28px;
-    padding: 10px 18px;
-    margin: -1.5cm auto 0;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 14px 8px !important;
+    padding: 16px 12px !important;
+    border-radius: 20px !important; /* Elegant rounded card, prevents turning into a giant circle */
+    margin: 15px auto 0 !important;
+    max-width: calc(100% - 24px) !important;
+    justify-items: center;
+    align-items: center;
+    box-sizing: border-box;
   }
 
-  .tool-name {
-    font-size: 16px;
+  .tool-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    padding: 4px !important;
+    text-align: center !important;
+    width: 100% !important;
   }
 
   .tool-icon {
-    width: 40px;
-    height: 40px;
+    width: 32px !important;
+    height: 32px !important;
+    object-fit: contain;
+  }
+
+  .tool-name {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    letter-spacing: 0.2px;
+  }
+
+  /* About Section & Centered Proportional Cube Card */
+  .about-card-frame {
+    perspective: none !important;
+    margin: 10px auto 20px !important;
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  .about-frame-inner {
+    max-width: 310px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    border-radius: 24px !important;
+    transform: none !important; /* Remove translateY(1.5cm) push down */
+    background: rgba(26, 6, 10, 0.75) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.2) !important;
+  }
+
+  .about-title {
+    font-size: 22px !important;
+    line-height: 1.25 !important;
+  }
+
+  .about-description {
+    font-size: 12.5px !important;
+    line-height: 1.55 !important;
   }
 
   .about-stats-card {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px 12px;
-    padding: 20px 16px;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px 10px !important;
+    padding: 16px 12px !important;
+    border-radius: 18px !important;
   }
 
   .about-service-name {
+    font-size: 11px !important;
     white-space: normal;
   }
 
+  .about-service-icon-wrap {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 9px !important;
+  }
+
+  .about-service-icon-img {
+    width: 22px !important;
+    height: 22px !important;
+    max-width: 22px !important;
+    max-height: 22px !important;
+  }
+
+  /* Recent Projects Panel & 2-in-a-Row Cards */
+  .section-projects {
+    padding: 30px 0 60px !important;
+  }
+
+  .projects-block-panel {
+    padding: 16px 10px 14px !important;
+    border-radius: 20px !important;
+  }
+
+  .section-title {
+    font-size: 22px !important;
+    letter-spacing: -0.5px !important;
+  }
+
+  .pill-tag {
+    font-size: 10px !important;
+    padding: 4px 12px !important;
+  }
+
+  .projects-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important; /* Exactly 2 in a row */
+    gap: 12px 8px !important;
+    padding: 4px 0 !important;
+  }
+
+  .project-card {
+    border-radius: 16px !important;
+  }
+
+  .project-preview {
+    padding: 8px 8px 4px !important;
+    border-radius: 12px !important;
+  }
+
+  .project-info {
+    padding: 10px 10px 12px !important;
+  }
+
+  .project-meta h3 {
+    font-size: 13px !important;
+    line-height: 1.2 !important;
+    margin-bottom: 2px !important;
+  }
+
+  .project-meta p {
+    font-size: 10px !important;
+  }
+
+  .btn-project-arrow {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    font-size: 11px !important;
+  }
+
+  .btn-preview-showcase {
+    padding: 4px 8px !important;
+    font-size: 9px !important;
+    gap: 4px !important;
+  }
+
+  /* Design Services: 2-in-a-Row Cards */
+  .section-services {
+    padding: 30px 0 60px !important;
+  }
+
+  .services-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important; /* Exactly 2 in a row */
+    gap: 12px 8px !important;
+  }
+
+  .service-card {
+    padding: 16px 12px !important;
+    border-radius: 16px !important;
+  }
+
+  .service-icon-wrap {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 10px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .service-icon-img {
+    width: 24px !important;
+    height: 24px !important;
+    max-width: 24px !important;
+    max-height: 24px !important;
+  }
+
+  .service-card h3 {
+    font-size: 13px !important;
+    line-height: 1.25 !important;
+    margin-bottom: 6px !important;
+  }
+
+  .service-card p {
+    font-size: 10.5px !important;
+    line-height: 1.45 !important;
+  }
+
+  /* Compact Floating Social Icons */
   .social-floating-bar,
   .social-circle-group.fixed-right {
-    bottom: 20px;
-    right: 8px;
-    gap: 10px;
+    bottom: 14px !important;
+    right: 6px !important;
+    gap: 8px !important;
   }
 
   .social-circle-btn {
-    width: 44px;
-    height: 44px;
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .social-circle-btn svg {
+    width: 14px !important;
+    height: 14px !important;
   }
 }
 

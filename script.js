@@ -45,8 +45,12 @@
     const dw = Math.ceil(iw * baseScale);
     const dh = Math.ceil(ih * baseScale);
 
-    // Shift subject toward the right side (creating clear negative space on the left for text)
-    const shiftRatio = cw >= 1024 ? 0.12 : (cw >= 768 ? 0.08 : 0.03);
+    // Responsive subject placement: on desktop/tablet shift toward the right side to leave room for text;
+    // on mobile, shift a little bit to the left side on mobile version only
+    const isMobile = (typeof window !== 'undefined' && window.innerWidth <= 768);
+    const shiftRatio = isMobile
+      ? -0.10
+      : (window.innerWidth >= 1024 ? 0.12 : 0.08);
     const shiftX = Math.round(cw * shiftRatio);
 
     const extraW = dw - cw;
@@ -54,7 +58,7 @@
     const dx = centeredX + shiftX;
 
     // Shift background image a little bit downside so the subject sits comfortably below the header
-    const shiftYRatio = cw >= 1024 ? 0.08 : (cw >= 768 ? 0.06 : 0.04);
+    const shiftYRatio = isMobile ? 0.04 : (window.innerWidth >= 1024 ? 0.08 : 0.06);
     const shiftY = Math.round(Math.max(50, ch * shiftYRatio));
 
     // On wide viewports where dh > ch, bias slightly towards top before downward shift so head is never cut off
